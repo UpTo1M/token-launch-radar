@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Launch Radar — pre-token protocols, ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div>
+      <p class="eyebrow">DEFI LLAMA SNAPSHOT &middot; <span id="asOf">&mdash;</span></p>
+      <h1>Token Launch Radar</h1>
+      <p class="sub">Every protocol that <strong>records no token yet</strong>, ranked by what its launch
+      would be worth if its record stayed as it is. Click any row for its detail view and farm plan.</p>
+    </div>
+    <div class="legend" aria-label="How to read the board">
+      <span><i class="dot wl"></i> Watchlist</span>
+      <span><i class="dot early"></i> Early find</span>
+      <span><i class="dot live"></i> Already trades</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="stats" id="stats" aria-label="Board totals"></section>
+
+  <section class="controls" aria-label="Filter and sort the board">
+    <label>Search <input id="q" type="search" placeholder="Name, slug or category&hellip;" autocomplete="off"></label>
+    <label>Category <select id="cat"><option value="">All categories</option></select></label>
+    <label>Chain <select id="chain"><option value="">All chains</option></select></label>
+    <label>Min TVL <select id="minTvl">
+      <option value="0">Any TVL</option>
+      <option value="50000000">$50M+</option>
+      <option value="100000000">$100M+</option>
+      <option value="1000000000">$1B+</option>
+    </select></label>
+    <label class="check"><input id="watchlist" type="checkbox"> Watchlist only</label>
+    <label>Sort <select id="sort">
+      <option value="rank">Rank (implied value)</option>
+      <option value="tvl">TVL, high to low</option>
+      <option value="chg">7-day change, high to low</option>
+      <option value="age">Age, oldest first</option>
+      <option value="name">Name, A to Z</option>
+    </select></label>
+    <button id="reset" type="button">Reset</button>
+  </section>
+  <p class="count" id="count" role="status"></p>
+
+  <section id="detail" class="detail" hidden aria-label="Protocol detail"></section>
+
+  <section class="board-wrap">
+    <table class="board" id="board">
+      <thead><tr>
+        <th data-k="rank">#</th><th data-k="name">Protocol</th><th data-k="cat">Category</th>
+        <th data-k="chains">Chains</th><th data-k="tvl">TVL</th><th data-k="chg">7d</th>
+        <th data-k="age">Age</th><th data-k="implied">Implied value</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <section class="panel" id="yardstick" aria-label="The market yardstick">
+    <h2>The market&rsquo;s own yardstick</h2>
+    <p>Peer multiples are not guessed: each category&rsquo;s multiple is the <strong>median market-cap-to-TVL
+    ratio of the tokenized protocols in that category</strong> in this same snapshot. The biggest
+    tokenized protocols set the scale:</p>
+    <table class="mini" id="live"></table>
+  </section>
+
+  <section class="panel" id="method" aria-label="How the value is scored">
+    <h2>How the value is scored</h2>
+    <div class="formula">
+      <code>implied = TVL &times; peer multiple &times; growth factor &times; tenure factor &times; chains factor</code>
+    </div>
+    <ul class="method-list">
+      <li><strong>Peer multiple</strong> — median mcap/TVL of tokenized protocols in the same category,
+      used only where at least three tokenized peers set it; thinner categories use the global median
+      <span id="peerGlobal">&mdash;</span>&times;, so one outlier peer cannot set a category. Clamped to 0.05&ndash;1.50&times;.</li>
+      <li><strong>Growth factor</strong> — 1 + 0.6 &times; 7-day TVL change, change clamped to &minus;50%..+100%.</li>
+      <li><strong>Tenure factor</strong> — 0.85 + 0.30 &times; min(age, 4y) / 4y; a long track record with no token
+      yet scores up to 1.15&times;, a new listing 0.85&times;, unknown listing date 1.00&times;.</li>
+      <li><strong>Chains factor</strong> — 1 + 0.03 per extra chain, up to five (+15%).</li>
+    </ul>
+    <p class="caveat">Read it honestly: &ldquo;records no token&rdquo; is what DefiLlama&rsquo;s record says, not proof
+    a token does not exist, and the implied value is this radar&rsquo;s own claim — it does not predict
+    whether or when any protocol issues a token. Farm plans are generic steps derived from each
+    protocol&rsquo;s category, chains, TVL and age; always check the protocol&rsquo;s own pages before acting,
+    never pay to claim, and never connect a wallet from a link in a DM.</p>
+  </section>
+
+  <footer>
+    <p id="source"></p>
+    <p>Built for the make.fun &ldquo;Build the best token launch radar&rdquo; bounty. Model
+    <span id="modelVer">&mdash;</span> &middot; data is a sealed snapshot, never fetched live.</p>
+  </footer>
+</main>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
